@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import platform
 import psutil
@@ -175,7 +176,7 @@ def main():
         elif select == "2":
             save_json()
         elif select == "3":
-            exit()
+            sys.exit()
         select = 0
 
 
