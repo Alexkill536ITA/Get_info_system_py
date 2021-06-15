@@ -141,15 +141,10 @@ def save_json():
 
 # function to add to JSON
 def write_json(new_data, filename = 'list.json'):
-    with open(filename,'r+') as file:
-          # First we load existing data into a dict.
-        file_data = json.load(file)
-        # Join new_dat3a with file_data
-        file_data.update(new_data)
-        # Sets file's current position at offset.
-        file.seek(0)
-        # convert back to json.
-        json.dump(file_data, file, indent = 4)
+    with open(filename, 'a') as outfile:
+        outfile.write(json.dumps(new_data, indent = 4))
+        outfile.write(",")
+        outfile.close()
 
 # def db_insert_data(mydict):
 #     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
