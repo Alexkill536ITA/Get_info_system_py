@@ -87,8 +87,8 @@ def save_json():
     gpu_info = computer.Win32_VideoController()[0]
     partitions = psutil.disk_partitions()
     Disk = {}
+    num = 0
     for partition in partitions:
-        num = 0
         try:
             partition_usage = psutil.disk_usage(partition.mountpoint)
         except PermissionError:
@@ -104,6 +104,7 @@ def save_json():
             "Free": get_size(partition_usage.free),
             "Percentage": str(partition_usage.percent) + "%"
         }
+        num = num + 1
     data = {
         "ID": uuid.uuid4().hex,
         "INFO": {
