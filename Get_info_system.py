@@ -66,21 +66,25 @@ def config_writer():
                 input("Press Enter to continue...")
             elif select == "2":
                 new = input(" Insert New Path: ")
+                print(f"New Path Insert: {fg('light_yellow')}{new}{fg(251)}")
                 if (query_yes_no("\nare you sure you apply the changes?")):
-                    read_conf['root_save'] = new
+                    read_conf['root_save'] = new   
                     writer_file(read_conf)
             elif select == "3":
                 new = input(" Insert New MongoDB URL: ")
-                if (query_yes_no("\nare you sure you apply the changes?")):
+                print(f"New URL Insert: {fg('light_yellow')}{new}{fg(251)}")
+                if (query_yes_no("\nare you sure you apply the changes?")):  
                     read_conf['mongo_url'] = new
                     writer_file(read_conf)
             elif select == "4":
                 new = input(" Insert New MongoDB DataBase: ")
+                print(f"New DataBase Insert: {fg('light_yellow')}{new}{fg(251)}")
                 if (query_yes_no("\nare you sure you apply the changes?")):
                     read_conf['mongo_db'] = new
                     writer_file(read_conf)
             elif select == "5":
                 new = input(" Insert New Table: ")
+                print(f" New Table Insert: {fg('light_yellow')}{new}{fg(251)}")
                 if (query_yes_no("\nare you sure you apply the changes?")):
                     read_conf['mongo_tabs'] = new
                     writer_file(read_conf)
@@ -127,14 +131,13 @@ def print_cli_data():
     print("\n==================== %sCPU%s ======================" %  (fg('light_cyan'), fg(251)))
     proc_info = computer.Win32_Processor()[0]
     print(' CPU Name: {0}'.format(proc_info.Name))
-    print(f" Type CPU: {platform.processor()}")
+    print(f" CPU Type: {platform.processor()}")
     print(f" Machine type: {platform.machine()}")
     print(f" Physical Cores: {psutil.cpu_count(logical=False)}")
     print(f" Logical Cores: {psutil.cpu_count(logical=True)}")
 
     print("\n==================== %sRAM%s ======================" % (fg('light_magenta'), fg(251)))
-    print(
-        f" Total RAM installed: {round(psutil.virtual_memory().total/1000000000, 2)} GB")
+    print(f" Total RAM installed: {round(psutil.virtual_memory().total/1000000000, 2)} GB")
 
     print("\n==================== %sGPU%s ======================" % (fg('light_green'), fg(251)))
     gpu_info = computer.Win32_VideoController()[0]
@@ -190,7 +193,7 @@ def save_json(enable = False):
             # this can be catched due to the disk that
             # isn't ready
             continue
-        Disk[num] = {
+        Disk[str(num)] = {
             "Device": partition.device,
             "Mountpoint": partition.mountpoint,
             "File system": partition.fstype,
