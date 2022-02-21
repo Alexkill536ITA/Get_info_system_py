@@ -236,7 +236,8 @@ def save_json(enable = False):
     if (enable):
         db_insert_data(data)
     else :
-        os.chdir(config['root_save'])
+        if os.getcwd() != config['root_save']:
+            os.chdir(config['root_save'])
         write_json(data)
 
 def write_json(new_data, filename='list.json'):
