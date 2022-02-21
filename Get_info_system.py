@@ -253,11 +253,14 @@ def write_json(new_data, filename='list.json'):
 
 def db_insert_data(mydict):
     global config
-    myclient = pymongo.MongoClient(config['mongo_url'])
-    mydb = myclient[config['mongo_db']]
-    mycol = mydb[config['mongo_tabs']]
-    mycol.insert_one(mydict)
-    print("[ %s OK   %s] Insert Data Compleate\n" % (fg('light_green'), fg(251)))
+    try:
+        myclient = pymongo.MongoClient(config['mongo_url'])
+        mydb = myclient[config['mongo_db']]
+        mycol = mydb[config['mongo_tabs']]
+        mycol.insert_one(mydict)
+        print("[ %s OK   %s] Insert Data Compleate\n" % (fg('light_green'), fg(251)))
+    except:
+        print("[ %sERROR %s] ERROR Fail Insert Data\n" % (fg('light_red'), fg(251)))
 
 def main():
     while True:
