@@ -284,6 +284,9 @@ def save_json(saveDB=False):
         if os.getcwd() != config['root_save']:
             os.chdir(config['root_save'])
         write_json(data, config['name_save'])
+    input("Press Enter to continue...")
+    sys.exit()
+
 
 def write_json(new_data, filename='list.json'):
     if os.path.isfile(filename):
