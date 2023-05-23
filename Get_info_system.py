@@ -3,14 +3,12 @@ import sys
 import datetime
 import platform
 import psutil
-import wmi
 import json
 import uuid
 from colored import fg
 import pymongo
 import subprocess
 
-computer = wmi.WMI()
 config = {}
 
 def query_yes_no(question, default="yes"):
@@ -147,10 +145,10 @@ def get_size(bytes, suffix="B"):
 def get_data():
     my_system = dict()
     if(platform.system() == 'Windows'):
-        system = computer.Win32_ComputerSystem()[0]
-        cpu_info = computer.Win32_Processor()[0]
-        gpu_info = computer.Win32_VideoController()[0]
-        bios = computer.Win32_BIOS()[0]
+        system = wmi.WMI().Win32_ComputerSystem()[0]
+        cpu_info = wmi.WMI().Win32_Processor()[0]
+        gpu_info = wmi.WMI().Win32_VideoController()[0]
+        bios = wmi.WMI().Win32_BIOS()[0]
         my_system["Manufacturer"] = system.Manufacturer
         my_system["Model"] = system.Model
         my_system["Bios_Manufacturer"] = bios.Manufacturer
@@ -352,4 +350,6 @@ def main():
         select = 0
 
 if __name__ == "__main__":
+    if(platform.system() == 'Windows'):
+        import wmi
     main()
