@@ -241,6 +241,10 @@ def save_json(saveDB=False):
             "Manufacturer": my_system['Manufacturer'],
             "Model": my_system['Model']
         },
+        "BIOS": {
+            "Manufacturer": my_system['Bios_Manufacturer'],
+            "Version": my_system['Bios_Version']
+        },
         "CPU": {
             "Name": my_system['Cpu_Name'],
             "Type": platform.processor(),
