@@ -227,29 +227,12 @@ def print_cli_data():
     print("\n===============================================\n")
     input("Press Enter to continue...")
 
-def save_json(enable=False):
+def save_json(saveDB=False):
     global config
     my_system = get_data()
     partitions = psutil.disk_partitions()
     Disk = {}
     num = 0
-    for partition in partitions:
-        try:
-            partition_usage = psutil.disk_usage(partition.mountpoint)
-        except PermissionError:
-            # this can be catched due to the disk that
-            # isn't ready
-            continue
-        Disk[str(num)] = {
-            "Device": partition.device,
-            "Mountpoint": partition.mountpoint,
-            "File system": partition.fstype,
-            "Total Size": get_size(partition_usage.total),
-            "Used": get_size(partition_usage.used),
-            "Free": get_size(partition_usage.free),
-            "Percentage": str(partition_usage.percent) + "%"
-        }
-        num = num + 1
     data = {
         "ID": uuid.uuid4().hex,
         "Data Insert": str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
@@ -279,8 +262,27 @@ def save_json(enable=False):
             "Arch": str(platform.architecture()).replace('"', "").replace('(', "").replace(')', "").replace("'", "")
         }
     }
+
+    for partition in partitions:
+        try:
+            partition_usage = psutil.disk_usage(partition.mountpoint)
+        except PermissionError:
+            # this can be catched due to the disk that
+            # isn't ready
+            continue
+        Disk[str(num)] = {
+            "Device": partition.device,
+            "Mountpoint": partition.mountpoint,
+            "File system": partition.fstype,
+            "Total Size": get_size(partition_usage.total),
+            "Used": get_size(partition_usage.used),
+            "Free": get_size(partition_usage.free),
+            "Percentage": str(partition_usage.percent) + "%"
+        }
+        num += 1
     data["DISK"] = Disk
-    if (enable):
+
+    if (saveDB):
         db_insert_data(data)
     else:
         if os.getcwd() != config['root_save']:
