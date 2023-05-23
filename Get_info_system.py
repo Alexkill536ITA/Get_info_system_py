@@ -229,9 +229,7 @@ def print_cli_data():
 
 def save_json(enable=False):
     global config
-    my_system = computer.Win32_ComputerSystem()[0]
-    proc_info = computer.Win32_Processor()[0]
-    gpu_info = computer.Win32_VideoController()[0]
+    my_system = get_data()
     partitions = psutil.disk_partitions()
     Disk = {}
     num = 0
@@ -257,11 +255,11 @@ def save_json(enable=False):
         "Data Insert": str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
         "INFO": {
             "Computer Name": platform.node(),
-            "Manufacturer": my_system.Manufacturer,
-            "Model": my_system.Model
+            "Manufacturer": my_system['Manufacturer'],
+            "Model": my_system['Model']
         },
         "CPU": {
-            "Name": proc_info.Name,
+            "Name": my_system['Cpu_Name'],
             "Type": platform.processor(),
             "Machine": platform.machine(),
             "Physical Cores": psutil.cpu_count(logical=False),
@@ -271,7 +269,7 @@ def save_json(enable=False):
             "Total": str(round(psutil.virtual_memory().total/1000000000, 2)) + "GB"
         },
         "GPU": {
-            "Name": gpu_info.Name
+            "Name": my_system['Gpu_Name']
         },
         "OS": {
             "System": platform.system(),
