@@ -43,29 +43,21 @@ def config_writer():
             read_conf = json.load(json_data_file)
         enable = True
         while enable:
-            print("/=============================================\\")
-            print("|                                             |")
-            print("|                 %sEdit Config%s                 |" %
-                  (fg('light_yellow'), fg(251)))
-            print("|                                             |")
-            print("|=============================================|")
-            print("|                                             |")
-            print("|    1 - Print Config %sCLI%s                     |" %
-                  (fg('light_cyan'), fg(251)))
-            print("|    2 - Change Save %sPath%s                     |" %
-                  (fg(202), fg(251)))
-            print("|    3 - Change Save %sName%s                     |" %
-                  (fg(202), fg(251)))
-            print("|    4 - Change URL %sMongoDB%s                   |" %
-                  (fg('light_green'), fg(251)))
-            print("|    5 - Change DataBase %sMongoDB%s              |" %
-                  (fg('light_green'), fg(251)))
-            print("|    6 - Change Table %sMongoDB%s                 |" %
-                  (fg('light_green'), fg(251)))
-            print("|    7 - %sExit%s Edit Config                     |" %
-                  (fg('light_red'), fg(251)))
-            print("|                                             |")
-            print("\\=============================================/\n")
+            print("/===============================================\\")
+            print("|\t\t\t\t\t\t|")
+            print("|\t\t%sEdit Config%s\t\t\t|" % (fg('light_yellow'), fg(251)))
+            print("|\t\t\t\t\t\t|")
+            print("|===============================================|")
+            print("|\t\t\t\t\t\t|")
+            print("|\t1 - Print Config %sCLI%s\t\t\t|" % (fg('light_cyan'), fg(251)))
+            print("|\t2 - Change Save %sPath%s\t\t\t|" % (fg(202), fg(251)))
+            print("|\t3 - Change Save %sName%s\t\t\t|" % (fg(202), fg(251)))
+            print("|\t4 - Change URL %sMongoDB%s\t\t\t|" % (fg('light_green'), fg(251)))
+            print("|\t5 - Change DataBase %sMongoDB%s\t\t|" % (fg('light_green'), fg(251)))
+            print("|\t6 - Change Table %sMongoDB%s\t\t|" % (fg('light_green'), fg(251)))
+            print("|\t7 - %sExit%s Edit Config\t\t\t|" % (fg('light_red'), fg(251)))
+            print("|\t\t\t\t\t\t|")
+            print("\\===============================================/\n")
             select = input(" Insert options: ")
             if select == "1":
                 print("\n Save %sPath%s: %s%s%s" % (fg(202), fg(251), fg('light_yellow'), read_conf['root_save'], fg(251)))
@@ -166,30 +158,30 @@ def get_data():
 
 def print_cli_data():
     my_system = get_data()
-    print("\n==================== %sINFO%s =====================" % (fg('light_blue'), fg(251)))
+    print("\n===================== %sINFO%s ======================" % (fg('light_blue'), fg(251)))
     print(f" Computer Name: {platform.node()}")
     print(f" Manufacturer: {my_system['Manufacturer']}")
     print(f" Model: {my_system['Model']}")
 
-    print("\n==================== %sBIOS%s =====================" % (fg('light_blue'), fg(251)))
+    print("\n===================== %sBIOS%s ======================" % (fg('light_blue'), fg(251)))
     print(f" Manufacturer: {my_system['Bios_Manufacturer']}")
     print(f" Version: {my_system['Bios_Version']}")
 
-    print("\n==================== %sCPU%s ======================" % (fg('light_cyan'), fg(251)))
+    print("\n===================== %sCPU%s =======================" % (fg('light_cyan'), fg(251)))
     print(f" CPU Name: {my_system['Cpu_Name']}")
     print(f" CPU Type: {platform.processor()}")
     print(f" Machine type: {platform.machine()}")
     print(f" Physical Cores: {psutil.cpu_count(logical=False)}")
     print(f" Logical Cores: {psutil.cpu_count(logical=True)}")
 
-    print("\n==================== %sRAM%s ======================" % (fg('light_magenta'), fg(251)))
+    print("\n===================== %sRAM%s =======================" % (fg('light_magenta'), fg(251)))
     print(
         f" Total RAM installed: {round(psutil.virtual_memory().total/1000000000, 2)} GB")
 
-    print("\n==================== %sGPU%s ======================" % (fg('light_green'), fg(251)))
+    print("\n===================== %sGPU%s =======================" % (fg('light_green'), fg(251)))
     print(f" GPU Name: {my_system['Gpu_Name']}")
 
-    print("\n==================== %sDISK%s =====================" %
+    print("\n===================== %sDISK%s ======================" %
           (fg('light_yellow'), fg(251)))
     print(" Partitions and Usage:")
     # get all disk partitions
@@ -217,14 +209,14 @@ def print_cli_data():
 
     Arch = str(platform.architecture()).replace('"', "").replace(
         '(', "").replace(')', "").replace("'", "")
-    print("\n==================== %sOS%s =======================" %
+    print("\n===================== %sOS%s ========================" %
           (fg('light_red'), fg(251)))
     print(f" OS: {platform.system()}")
     print(f" OS Release: {platform.release()}")
     print(f" OS Version: {platform.version()}")
     print(f" Platform type: {platform.platform()}")
     print(f" Arch: {Arch}")
-    print("\n===============================================\n")
+    print("\n=================================================\n")
     input("Press Enter to continue...")
 
 def save_json(saveDB=False):
@@ -320,25 +312,19 @@ def db_insert_data(mydict):
 
 def main():
     while True:
-        print("%s/=============================================\\" % (fg(251)))
-        print("|                                             |")
-        print("|      Get System Info by %sAlexkill536ITA%s      |" %
-              (fg('light_yellow'), fg(251)))
-        print("|                                             |")
-        print("|=============================================|")
-        print("|                                             |")
-        print("|    1 - Print Info System to %sCLI%s             |" %
-              (fg('light_cyan'), fg(251)))
-        print("|    2 - Save Info System to %sJSON%s             |" %
-              (fg(202), fg(251)))
-        print("|    3 - Insert To DataBase %sMongoDB%s           |" %
-              (fg('light_green'), fg(251)))
-        print("|    4 - Edit %sConfig%s                          |" %
-              (fg('light_yellow'), fg(251)))
-        print("|    5 - %sExit%s                                 |" %
-              (fg('light_red'), fg(251)))
-        print("|                                             |")
-        print("\=============================================/\n")
+        print("%s/===============================================\\" % (fg(251)))
+        print("|\t\t\t\t\t\t|")
+        print("|\tGet System Info by %sAlexkill536ITA%s\t|" % (fg('light_yellow'), fg(251)))
+        print("|\t\t\t\t\t\t|")
+        print("|===============================================|")
+        print("|\t\t\t\t\t\t|")
+        print("|\t1 - Print Info System to %sCLI%s\t\t|" % (fg('light_cyan'), fg(251)))
+        print("|\t2 - Save Info System to %sJSON%s\t\t|" % (fg(202), fg(251)))
+        print("|\t3 - Insert To DataBase %sMongoDB%s\t\t|" % (fg('light_green'), fg(251)))
+        print("|\t4 - Edit %sConfig%s\t\t\t\t|" % (fg('light_yellow'), fg(251)))
+        print("|\t5 - %sExit%s\t\t\t\t|" % (fg('light_red'), fg(251)))
+        print("|\t\t\t\t\t\t|")
+        print("\===============================================/\n")
         config_read()
         select = input(" Insert options: ")
         if select == "1":
@@ -346,7 +332,7 @@ def main():
         elif select == "2":
             save_json()
         elif select == "3":
-            save_json(enable=True)
+            save_json(saveDB=True)
         elif select == "4":
             config_writer()
         elif select == "5":
