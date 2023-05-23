@@ -8,6 +8,7 @@ import json
 import uuid
 from colored import fg
 import pymongo
+import subprocess
 
 computer = wmi.WMI()
 config = {}
@@ -143,32 +144,52 @@ def get_size(bytes, suffix="B"):
             return f"{bytes:.2f}{unit}{suffix}"
         bytes /= factor
 
-def print_cli_data():
-    print("\n==================== %sINFO%s =====================" %
-          (fg('light_blue'), fg(251)))
-    my_system = computer.Win32_ComputerSystem()[0]
-    print(f" Computer Name: {platform.node()}")
-    print(f" Manufacturer: {my_system.Manufacturer}")
-    print(f" Model: {my_system.Model}")
+def get_data():
+    my_system = dict()
+    if(platform.system() == 'Windows'):
+        system = computer.Win32_ComputerSystem()[0]
+        cpu_info = computer.Win32_Processor()[0]
+        gpu_info = computer.Win32_VideoController()[0]
+        bios = computer.Win32_BIOS()[0]
+        my_system["Manufacturer"] = system.Manufacturer
+        my_system["Model"] = system.Model
+        my_system["Bios_Manufacturer"] = bios.Manufacturer
+        my_system["Bios_Version"] = bios.smbiosbiosversion
+        my_system["Cpu_Name"] = cpu_info.Name
+        my_system["Gpu_Name"] = gpu_info.Name
+    else:
+        my_system["Manufacturer"] = subprocess.check_output("dmidecode --string baseboard-manufacturer", universal_newlines=True, shell=True).replace("\n","")
+        my_system["Model"] = subprocess.check_output("dmidecode --string baseboard-product-name", universal_newlines=True, shell=True).replace("\n","")
+        my_system["Bios_Manufacturer"] = subprocess.check_output("dmidecode --string bios-vendor", universal_newlines=True, shell=True).replace("\n","")
+        my_system["Bios_Version"] = subprocess.check_output("dmidecode --string bios-version", universal_newlines=True, shell=True).replace("\n","")
+        my_system["Cpu_Name"] = subprocess.check_output("dmidecode --string processor-version", universal_newlines=True, shell=True).replace("\n","")
+        my_system["Gpu_Name"] = subprocess.check_output("lspci -k | awk '/VGA/{getline;sub(\"^[^ ]* \",\"\");sub(\"Device.*\",\"\");print}'", universal_newlines=True, shell=True).replace("\n","")
+    return my_system
 
-    print("\n==================== %sCPU%s ======================" %
-          (fg('light_cyan'), fg(251)))
-    proc_info = computer.Win32_Processor()[0]
-    print(' CPU Name: {0}'.format(proc_info.Name))
+def print_cli_data():
+    my_system = get_data()
+    print("\n==================== %sINFO%s =====================" % (fg('light_blue'), fg(251)))
+    print(f" Computer Name: {platform.node()}")
+    print(f" Manufacturer: {my_system['Manufacturer']}")
+    print(f" Model: {my_system['Model']}")
+
+    print("\n==================== %sBIOS%s =====================" % (fg('light_blue'), fg(251)))
+    print(f" Manufacturer: {my_system['Bios_Manufacturer']}")
+    print(f" Version: {my_system['Bios_Version']}")
+
+    print("\n==================== %sCPU%s ======================" % (fg('light_cyan'), fg(251)))
+    print(f" CPU Name: {my_system['Cpu_Name']}")
     print(f" CPU Type: {platform.processor()}")
     print(f" Machine type: {platform.machine()}")
     print(f" Physical Cores: {psutil.cpu_count(logical=False)}")
     print(f" Logical Cores: {psutil.cpu_count(logical=True)}")
 
-    print("\n==================== %sRAM%s ======================" %
-          (fg('light_magenta'), fg(251)))
+    print("\n==================== %sRAM%s ======================" % (fg('light_magenta'), fg(251)))
     print(
         f" Total RAM installed: {round(psutil.virtual_memory().total/1000000000, 2)} GB")
 
-    print("\n==================== %sGPU%s ======================" %
-          (fg('light_green'), fg(251)))
-    gpu_info = computer.Win32_VideoController()[0]
-    print(' GPU Name: {0}'.format(gpu_info.Name))
+    print("\n==================== %sGPU%s ======================" % (fg('light_green'), fg(251)))
+    print(f" GPU Name: {my_system['Gpu_Name']}")
 
     print("\n==================== %sDISK%s =====================" %
           (fg('light_yellow'), fg(251)))
@@ -196,10 +217,10 @@ def print_cli_data():
         print(f"  | Free: {get_size(partition_usage.free)}")
         print(f"  | Percentage: {partition_usage.percent}%\n")
 
-    print("\n==================== %sOS%s =======================" %
-          (fg('light_red'), fg(251)))
     Arch = str(platform.architecture()).replace('"', "").replace(
         '(', "").replace(')', "").replace("'", "")
+    print("\n==================== %sOS%s =======================" %
+          (fg('light_red'), fg(251)))
     print(f" OS: {platform.system()}")
     print(f" OS Release: {platform.release()}")
     print(f" OS Version: {platform.version()}")
