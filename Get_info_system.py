@@ -5,11 +5,12 @@ import platform
 import psutil
 import json
 import uuid
-from colored import fg
 import pymongo
 import subprocess
+from colored import fg
 
 config = {}
+
 
 def query_yes_no(question, default="yes"):
     valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
@@ -33,6 +34,7 @@ def query_yes_no(question, default="yes"):
             sys.stdout.write(
                 "Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
 
+
 def config_writer():
     def writer_file(data):
         with open("config.json", "w") as json_data_file:
@@ -45,26 +47,37 @@ def config_writer():
         while enable:
             print("/===============================================\\")
             print("|\t\t\t\t\t\t|")
-            print("|\t\t%sEdit Config%s\t\t\t|" % (fg('light_yellow'), fg(251)))
+            print("|\t\t%sEdit Config%s\t\t\t|" %
+                  (fg('light_yellow'), fg(251)))
             print("|\t\t\t\t\t\t|")
             print("|===============================================|")
             print("|\t\t\t\t\t\t|")
-            print("|\t1 - Print Config %sCLI%s\t\t\t|" % (fg('light_cyan'), fg(251)))
+            print("|\t1 - Print Config %sCLI%s\t\t\t|" %
+                  (fg('light_cyan'), fg(251)))
             print("|\t2 - Change Save %sPath%s\t\t\t|" % (fg(202), fg(251)))
             print("|\t3 - Change Save %sName%s\t\t\t|" % (fg(202), fg(251)))
-            print("|\t4 - Change URL %sMongoDB%s\t\t\t|" % (fg('light_green'), fg(251)))
-            print("|\t5 - Change DataBase %sMongoDB%s\t\t|" % (fg('light_green'), fg(251)))
-            print("|\t6 - Change Table %sMongoDB%s\t\t|" % (fg('light_green'), fg(251)))
-            print("|\t7 - %sExit%s Edit Config\t\t\t|" % (fg('light_red'), fg(251)))
+            print("|\t4 - Change URL %sMongoDB%s\t\t\t|" %
+                  (fg('light_green'), fg(251)))
+            print("|\t5 - Change DataBase %sMongoDB%s\t\t|" %
+                  (fg('light_green'), fg(251)))
+            print("|\t6 - Change Table %sMongoDB%s\t\t|" %
+                  (fg('light_green'), fg(251)))
+            print("|\t7 - %sExit%s Edit Config\t\t\t|" %
+                  (fg('light_red'), fg(251)))
             print("|\t\t\t\t\t\t|")
             print("\\===============================================/\n")
             select = input(" Insert options: ")
             if select == "1":
-                print("\n Save %sPath%s: %s%s%s" % (fg(202), fg(251), fg('light_yellow'), read_conf['root_save'], fg(251)))
-                print(" Save %sName%s: %s%s%s" % (fg(202), fg(251), fg('light_yellow'), read_conf['name_save'], fg(251)))
-                print(" %sMongoDB%s URL: %s%s%s" % (fg('light_green'), fg(251), fg('light_yellow'), read_conf['mongo_url'], fg(251)))
-                print(" %sMongoDB%s DataBase: %s%s%s" % (fg('light_green'), fg(251), fg('light_yellow'), read_conf['mongo_db'], fg(251)))
-                print(" %sMongoDB%s Table: %s%s%s\n"% (fg('light_green'), fg(251), fg('light_yellow'), read_conf['mongo_tabs'], fg(251)))
+                print("\n Save %sPath%s: %s%s%s" % (fg(202), fg(251), fg(
+                    'light_yellow'), read_conf['root_save'], fg(251)))
+                print(" Save %sName%s: %s%s%s" % (fg(202), fg(251), fg(
+                    'light_yellow'), read_conf['name_save'], fg(251)))
+                print(" %sMongoDB%s URL: %s%s%s" % (fg('light_green'), fg(
+                    251), fg('light_yellow'), read_conf['mongo_url'], fg(251)))
+                print(" %sMongoDB%s DataBase: %s%s%s" % (fg('light_green'), fg(
+                    251), fg('light_yellow'), read_conf['mongo_db'], fg(251)))
+                print(" %sMongoDB%s Table: %s%s%s\n" % (fg('light_green'), fg(
+                    251), fg('light_yellow'), read_conf['mongo_tabs'], fg(251)))
                 input("Press Enter to continue...")
             elif select == "2":
                 new = input(" Insert New Path: ")
@@ -112,6 +125,7 @@ def config_writer():
         }
         writer_file(data)
 
+
 def config_read():
     global config
     if (os.path.isfile("config.json")):
@@ -120,6 +134,7 @@ def config_read():
     else:
         config_writer()
         config_read()
+
 
 def get_size(bytes, suffix="B"):
     """
@@ -134,9 +149,10 @@ def get_size(bytes, suffix="B"):
             return f"{bytes:.2f}{unit}{suffix}"
         bytes /= factor
 
+
 def get_data():
     my_system = dict()
-    if(platform.system() == 'Windows'):
+    if (platform.system() == 'Windows'):
         system = wmi.WMI().Win32_ComputerSystem()[0]
         cpu_info = wmi.WMI().Win32_Processor()[0]
         gpu_info = wmi.WMI().Win32_VideoController()[0]
@@ -148,37 +164,49 @@ def get_data():
         my_system["Cpu_Name"] = cpu_info.Name
         my_system["Gpu_Name"] = gpu_info.Name
     else:
-        my_system["Manufacturer"] = subprocess.check_output("dmidecode --string baseboard-manufacturer", universal_newlines=True, shell=True).replace("\n","")
-        my_system["Model"] = subprocess.check_output("dmidecode --string baseboard-product-name", universal_newlines=True, shell=True).replace("\n","")
-        my_system["Bios_Manufacturer"] = subprocess.check_output("dmidecode --string bios-vendor", universal_newlines=True, shell=True).replace("\n","")
-        my_system["Bios_Version"] = subprocess.check_output("dmidecode --string bios-version", universal_newlines=True, shell=True).replace("\n","")
-        my_system["Cpu_Name"] = subprocess.check_output("dmidecode --string processor-version", universal_newlines=True, shell=True).replace("\n","")
-        my_system["Gpu_Name"] = subprocess.check_output("lspci -k | awk '/VGA/{getline;sub(\"^[^ ]* \",\"\");sub(\"Device.*\",\"\");print}'", universal_newlines=True, shell=True).replace("\n","")
+        my_system["Manufacturer"] = subprocess.check_output(
+            "dmidecode --string baseboard-manufacturer", universal_newlines=True, shell=True).replace("\n", "")
+        my_system["Model"] = subprocess.check_output(
+            "dmidecode --string baseboard-product-name", universal_newlines=True, shell=True).replace("\n", "")
+        my_system["Bios_Manufacturer"] = subprocess.check_output(
+            "dmidecode --string bios-vendor", universal_newlines=True, shell=True).replace("\n", "")
+        my_system["Bios_Version"] = subprocess.check_output(
+            "dmidecode --string bios-version", universal_newlines=True, shell=True).replace("\n", "")
+        my_system["Cpu_Name"] = subprocess.check_output(
+            "dmidecode --string processor-version", universal_newlines=True, shell=True).replace("\n", "")
+        my_system["Gpu_Name"] = subprocess.check_output(
+            "lspci -k | awk '/VGA/{getline;sub(\"^[^ ]* \",\"\");sub(\"Device.*\",\"\");print}'", universal_newlines=True, shell=True).replace("\n", "")
     return my_system
+
 
 def print_cli_data():
     my_system = get_data()
-    print("\n===================== %sINFO%s ======================" % (fg('light_blue'), fg(251)))
+    print("\n===================== %sINFO%s ======================" %
+          (fg('light_blue'), fg(251)))
     print(f" Computer Name: {platform.node()}")
     print(f" Manufacturer: {my_system['Manufacturer']}")
     print(f" Model: {my_system['Model']}")
 
-    print("\n===================== %sBIOS%s ======================" % (fg('light_blue'), fg(251)))
+    print("\n===================== %sBIOS%s ======================" %
+          (fg('light_blue'), fg(251)))
     print(f" Manufacturer: {my_system['Bios_Manufacturer']}")
     print(f" Version: {my_system['Bios_Version']}")
 
-    print("\n===================== %sCPU%s =======================" % (fg('light_cyan'), fg(251)))
+    print("\n===================== %sCPU%s =======================" %
+          (fg('light_cyan'), fg(251)))
     print(f" CPU Name: {my_system['Cpu_Name']}")
     print(f" CPU Type: {platform.processor()}")
     print(f" Machine type: {platform.machine()}")
     print(f" Physical Cores: {psutil.cpu_count(logical=False)}")
     print(f" Logical Cores: {psutil.cpu_count(logical=True)}")
 
-    print("\n===================== %sRAM%s =======================" % (fg('light_magenta'), fg(251)))
+    print("\n===================== %sRAM%s =======================" %
+          (fg('light_magenta'), fg(251)))
     print(
         f" Total RAM installed: {round(psutil.virtual_memory().total/1000000000, 2)} GB")
 
-    print("\n===================== %sGPU%s =======================" % (fg('light_green'), fg(251)))
+    print("\n===================== %sGPU%s =======================" %
+          (fg('light_green'), fg(251)))
     print(f" GPU Name: {my_system['Gpu_Name']}")
 
     print("\n===================== %sDISK%s ======================" %
@@ -218,6 +246,7 @@ def print_cli_data():
     print(f" Arch: {Arch}")
     print("\n=================================================\n")
     input("Press Enter to continue...")
+
 
 def save_json(saveDB=False):
     global config
@@ -300,6 +329,7 @@ def write_json(new_data, filename='list.json'):
     print("[ %s OK   %s] Saved File: %s\n" %
           (fg('light_green'), fg(251), path_out))
 
+
 def db_insert_data(mydict):
     global config
     try:
@@ -313,18 +343,23 @@ def db_insert_data(mydict):
         print("[ %sERROR %s] ERROR Fail Insert Data\n" %
               (fg('light_red'), fg(251)))
 
+
 def main():
     while True:
         print("%s/===============================================\\" % (fg(251)))
         print("|\t\t\t\t\t\t|")
-        print("|\tGet System Info by %sAlexkill536ITA%s\t|" % (fg('light_yellow'), fg(251)))
+        print("|\tGet System Info by %sAlexkill536ITA%s\t|" %
+              (fg('light_yellow'), fg(251)))
         print("|\t\t\t\t\t\t|")
         print("|===============================================|")
         print("|\t\t\t\t\t\t|")
-        print("|\t1 - Print Info System to %sCLI%s\t\t|" % (fg('light_cyan'), fg(251)))
+        print("|\t1 - Print Info System to %sCLI%s\t\t|" %
+              (fg('light_cyan'), fg(251)))
         print("|\t2 - Save Info System to %sJSON%s\t\t|" % (fg(202), fg(251)))
-        print("|\t3 - Insert To DataBase %sMongoDB%s\t\t|" % (fg('light_green'), fg(251)))
-        print("|\t4 - Edit %sConfig%s\t\t\t\t|" % (fg('light_yellow'), fg(251)))
+        print("|\t3 - Insert To DataBase %sMongoDB%s\t\t|" %
+              (fg('light_green'), fg(251)))
+        print("|\t4 - Edit %sConfig%s\t\t\t\t|" %
+              (fg('light_yellow'), fg(251)))
         print("|\t5 - %sExit%s\t\t\t\t|" % (fg('light_red'), fg(251)))
         print("|\t\t\t\t\t\t|")
         print("\===============================================/\n")
@@ -342,7 +377,8 @@ def main():
             sys.exit()
         select = 0
 
+
 if __name__ == "__main__":
-    if(platform.system() == 'Windows'):
+    if (platform.system() == 'Windows'):
         import wmi
     main()
